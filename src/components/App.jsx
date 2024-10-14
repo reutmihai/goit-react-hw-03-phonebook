@@ -5,16 +5,22 @@ const App = () => {
   const [state, setState] = useState({
     contacts: [
       {
-        name: 'Mihai',
+        id: nanoid(),
+        name: 'Reut Mihai',
         number: '0753256355',
-        id: nanoid()
       },
       {
-        name: 'Andrei',
+        id: nanoid(),
+        name: 'Mironescu Andrei',
         number: '0752526526',
-        id: nanoid()
+      },
+      {
+        id: nanoid(),
+        name: 'Cretan Cosmin',
+        number: '0746134620',
       },
     ],
+    filter: '',
     name: '',
     number: '',
   });
@@ -39,6 +45,7 @@ const App = () => {
       contacts: [...prevState.contacts, newContact],
       name: '',
       number: '',
+      filter: '',
     }));
   };
 
@@ -73,6 +80,21 @@ const App = () => {
       <h2>Contacts</h2>
       <ul>
         {state.contacts.map(contact => (
+          <li key={contact.id}>
+            {contact.name} : {contact.number}
+          </li>
+        ))}
+      </ul>
+      <h3>Find contacts by name</h3>
+      <input
+      type='text'
+      name="filter"
+      placeholder='Type a name'
+      value={state.filter}
+      onChange={handleChange}
+      />
+      <ul>
+        {state.contacts.filter(contact => contact.name.toLowerCase().includes(state.filter.toLowerCase())).map(contact => (
           <li key={contact.id}>
             {contact.name} : {contact.number}
           </li>
