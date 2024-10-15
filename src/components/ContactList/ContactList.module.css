@@ -1,0 +1,16 @@
+.deleteBtn {
+    background-color: red;
+}
+
+.contact-name {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid grey;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

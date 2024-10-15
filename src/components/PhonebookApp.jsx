@@ -1,7 +1,7 @@
 import React from 'react';
 import { nanoid } from 'nanoid';
 
-class App extends React.Component {
+class PhonebookApp extends React.Component {
   state = {
     contacts: [
       { id: nanoid(), name: 'Reut Mihai', number: '0753256355' },
@@ -18,11 +18,18 @@ class App extends React.Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = e => {
+  addContact = e => {
     e.preventDefault();
-    const { name, number } = this.state;
-    const newContact = { id: nanoid(), name, number };
+    const { name, number, contacts } = this.state;
+    const contactNamesLowerCase = contacts.map(contact => contact.name.toLowerCase());
+    console.log(name, contactNamesLowerCase);
 
+    if (contactNamesLowerCase.includes(name.toLowerCase())) {
+      alert(`${name} already exists in contacts.`);
+      return;
+    }
+    const newContact = { id: nanoid(), name, number };
+    
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
       name: '',
@@ -31,11 +38,41 @@ class App extends React.Component {
     }));
   };
 
+  filterContacts = contacts => {
+    const { filter } = this.state;
+
+    if (!filter) {
+      return contacts;
+    }
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+    );
+  };
+
+  displayContacts = contacts => {
+    return contacts.map(contact => (
+      <li key={contact.id}>
+        {contact.name} : {contact.number}
+        <button onClick={() => this.deleteContact(contact.id)}>Delete</button>
+      </li>
+    ));
+  };
+
+  deleteContact = (contactId) => {
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts.filter(contact => contact.id !== contactId)],
+    }));
+  };
+
   render() {
+    const { contacts } = this.state;
+    const filteredContacts = this.filterContacts(contacts);
+
     return (
       <div>
         <h1>Phonebook</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.addContact}>
           <span>Name</span>
           <input
             type="text"
@@ -61,13 +98,6 @@ class App extends React.Component {
           <button type="submit">Add Contact</button>
         </form>
         <h2>Contacts</h2>
-        <ul>
-          {this.state.contacts.map(contact => (
-            <li key={contact.id}>
-              {contact.name} : {contact.number}
-            </li>
-          ))}
-        </ul>
         <h3>Find contacts by name</h3>
         <input
           type="text"
@@ -76,22 +106,10 @@ class App extends React.Component {
           value={this.state.filter}
           onChange={this.handleChange}
         />
-        <ul>
-          {this.state.contacts
-            .filter(contact =>
-              contact.name
-                .toLowerCase()
-                .includes(this.state.filter.toLowerCase())
-            )
-            .map(contact => (
-              <li key={contact.id}>
-                {contact.name} : {contact.number}
-              </li>
-            ))}
-        </ul>
+        <ul>{this.displayContacts(filteredContacts)}</ul>
       </div>
     );
   }
 }
 
-export default App;
+export default PhonebookApp;

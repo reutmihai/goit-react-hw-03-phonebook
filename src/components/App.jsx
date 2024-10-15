@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
+import styles from './App.module.css';
 
 class App extends React.Component {
   state = {
@@ -18,10 +19,12 @@ class App extends React.Component {
   addContact = (name, number) => {
     const { contacts } = this.state;
     const contactNames = contacts.map(contact => contact.name.toLowerCase());
+
     if(contactNames.includes(name.toLowerCase())) {
       alert(`${name} already exists in contacts.`);
       return;
     }
+
     const newContact = {
       id: nanoid(),
       name,
@@ -49,15 +52,18 @@ class App extends React.Component {
     );
 
     return (
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm addContact={this.addContact} />
-        <h2>Contacts</h2>
-        <Filter filter={filter} onChange={this.handleFilterChange} />
-        <ContactList
-          contacts={filteredContacts}
-          deleteContact={this.deleteContact}
-        />
+      <div className={styles.container}>
+
+          <h1>Phonebook</h1>
+          <ContactForm addContact={this.addContact} />
+          <h2>Search by name</h2>
+          <Filter filter={filter} onChange={this.handleFilterChange} />
+          <h2>Contacts</h2>
+          <ContactList
+            contacts={filteredContacts}
+            deleteContact={this.deleteContact}
+          />
+
       </div>
     );
   }
