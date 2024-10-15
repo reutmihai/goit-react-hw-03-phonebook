@@ -7,20 +7,15 @@ import styles from './App.module.css';
 
 class App extends React.Component {
   state = {
-    contacts: [
-      { id: nanoid(), name: 'Reut Mihai', number: '0753256355' },
-      { id: nanoid(), name: 'Mironescu Andrei', number: '0752526526' },
-      { id: nanoid(), name: 'Cretan Cosmin', number: '0746134620' },
-    ],
+    contacts: [],
     filter: '',
   };
-
 
   addContact = (name, number) => {
     const { contacts } = this.state;
     const contactNames = contacts.map(contact => contact.name.toLowerCase());
 
-    if(contactNames.includes(name.toLowerCase())) {
+    if (contactNames.includes(name.toLowerCase())) {
       alert(`${name} already exists in contacts.`);
       return;
     }
@@ -35,7 +30,7 @@ class App extends React.Component {
     }));
   };
 
-  deleteContact = (contactId) => {
+  deleteContact = contactId => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
@@ -53,17 +48,19 @@ class App extends React.Component {
 
     return (
       <div className={styles.container}>
-
-          <h1>Phonebook</h1>
-          <ContactForm addContact={this.addContact} />
-          <h2>Search by name</h2>
-          <Filter filter={filter} onChange={this.handleFilterChange} />
-          <h2>Contacts</h2>
+        <h1>Phonebook</h1>
+        <ContactForm addContact={this.addContact} />
+        <h2>Search by name</h2>
+        <Filter filter={filter} onChange={this.handleFilterChange} />
+        <h2>Contacts</h2>
+        {contacts.length < 1 ? (
+          <span>Contact list are empty.</span>
+        ) : (
           <ContactList
             contacts={filteredContacts}
             deleteContact={this.deleteContact}
           />
-
+        )}
       </div>
     );
   }
