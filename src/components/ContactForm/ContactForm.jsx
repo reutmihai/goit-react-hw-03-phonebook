@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from '../ContactForm/ContactForm.module.css';
+import styles from './ContactForm.module.css';
 
 export default class ContactForm extends Component {
   state = {
@@ -16,39 +16,52 @@ export default class ContactForm extends Component {
     e.preventDefault();
     const { name, number } = this.state;
 
-    this.props.addContact(name, number);
+    if (!name || !number) return;
+
+    const isDuplicate = this.props.contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      alert('Contact already exists!');
+      return;
+    }
+
+    const newContact = {
+      id: Date.now(),
+      name,
+      number,
+    };
+
+    this.props.addContact(newContact);
 
     this.setState({ name: '', number: '' });
   };
 
   render() {
+    const { name, number } = this.state;
+
     return (
       <div>
         <form className={styles['contact-form']} onSubmit={this.handleSubmit}>
-          <div className={styles['name-number']}>
-            <span>Name</span>
+          <div>
+            <label>Name</label>
             <input
               type="text"
               name="name"
-              placeholder="Name"
-              pattern="^[a-zA-Z]+(([' -][a-zA-Z ])?[a-zA-Z]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces."
-              required
-              value={this.state.name}
+              value={name}
               onChange={this.handleChange}
+              required
             />
           </div>
-          <div className={styles['name-number']}>
-            <span>Number</span>
+          <div>
+            <label>Number</label>
             <input
               type="tel"
               name="number"
-              placeholder="Number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +."
-              required
-              value={this.state.number}
+              value={number}
               onChange={this.handleChange}
+              required
             />
           </div>
           <button type="submit">Add Contact</button>
